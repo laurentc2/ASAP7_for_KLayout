@@ -38,8 +38,7 @@ end
 
 # DRC test to run or not
 ###############
-OFFGRID = false
-DEBUG = true
+OFFGRID = true
 
 # KLAYOUT setup
 ########################
@@ -122,7 +121,6 @@ gatenogcut = gate - gcut
 (activesram , activenosram) = active.andnot(sramdrc)
 (ligsram , lignosram) = lig.andnot(sramdrc)
 
-if !DEBUG
 ###   WELL
 nwell.width(108.nm, projection).with_angle(90).output("WELL.W.1", "WELL.W.1 : Min. horizontal width of WELL : 108nm")
 nwell.width(54.nm, projection).with_angle(0).output("WELL.W.2", "WELL.W.2 : Min. vertical width of WELL : 54nm")
@@ -132,7 +130,6 @@ nwell.with_area(0 .. 0.005832).output("WELL.A.1A", "WELL.A.1A : Min. area of WEL
 nwell.holes.with_area(0 .. 0.005832).output("WELL.A.1B", "WELL.A.1B : Min. enclosed area of WELL : 5832nm2")
 nwell.enclosing(gatenogcut, 7.nm, projection).with_angle(90).output("WELL.GATE.EX.1", "WELL.GATE.EX.1 : Min. horizontal extension of WELL past GATE (not cut by GCUT layer): 7nm")
 nwell.not(sramdrc).enclosing(gatenogcut, 7.nm, projection).with_angle(0).output("WELL.GATE.EX.2", "WELL.GATE.EX.2 : Min. vertical extension of WELL past GATE (not cut by GCUT layer): 7nm")
-end
 
 ###   FIN
 fin.edges.with_angle(90).without_length(7.nm).output("FIN.W.1a", "FIN.W.1 : Exact vertical width of FIN : 7nm")
@@ -141,7 +138,6 @@ fin.drc(width(projection) &lt; 108.nm).with_angle(90).output("FIN.W.2", "FIN.W.2
 fin.space(35.nm, projection).polygons.not(fin).without_bbox_height(20.nm).sized(0,3.5.nm).output("FIN.S.1", "FIN.S.1 : Exact vertical FIN pitch : 27nm")
 fin.corners(0..90).sized(1.nm).output("FIN.AUX.1", "FIN.AUX.1 : FIN may not bend")
 
-if !DEBUG
 ###   GATE
 gate.drc(width(projection) != 20.nm).with_angle(90).output("GATE.W.1", "GATE.W.1 : Exact horizontal width of GATE : 20nm")
 gate.width(40.nm, projection).with_angle(0).output("GATE.W.2", "GATE.W.2 : Min. vertical width of GATE : 40nm")
@@ -510,7 +506,6 @@ v9.interacting(m9.enclosing(v9, 20.nm, projection, two_connected_sides_allowed).
 v9.interacting(pad.enclosing(v9, 20.nm, projection, two_connected_sides_allowed).edges - pad.enclosing(v9, 20.nm, projection, one_side_allowed).edges).output("V9.PAD.EN.2", "V9.PAD.EN.2 : Min. enclosure of V9 by PAD on at least two opposite sides  : 20nm")
 ((v9 - m9) + (v9 - pad)).output("V9.AUX.1" "V9.AUX.1 : V9 must be inside M9 and PAD")
 
-end
 
 #   ONGRID  defined in the paper :
 #   "ASAP7 : A 7-nm finFET predictive process design kit"
