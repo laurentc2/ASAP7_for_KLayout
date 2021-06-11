@@ -136,8 +136,7 @@ end
 
 ###   FIN
 fin.edges.with_angle(90).without_length(7.nm).output("FIN.W.1a", "FIN.W.1 : Exact vertical width of FIN : 7nm")
-fin.without_bbox_height(7.nm).output("FIN.W.1b", "FIN.W.1 : Exact vertical width of FIN : 7nm")
-fin.drc(if_all(angle == 90, length != 7.nm)).output("FIN.W.1c", "FIN.W.1 : Exact vertical width of FIN : 7nm")
+fin.without_bbox_height(7.nm).output("FIN.W.1", "FIN.W.1 : Exact vertical width of FIN : 7nm")
 fin.drc(width(projection) &lt; 108.nm).with_angle(90).output("FIN.W.2", "FIN.W.2 : Min. horizontal width of WELL : 108nm")
 fin.space(35.nm, projection).polygons.not(fin).without_bbox_height(20.nm).sized(0,3.5.nm).output("FIN.S.1", "FIN.S.1 : Exact vertical FIN pitch : 27nm")
 fin.corners(0..90).sized(1.nm).output("FIN.AUX.1", "FIN.AUX.1 : FIN may not bend")
