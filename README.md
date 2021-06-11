@@ -10,5 +10,5 @@ Within KLayout, create the technolgy ASAP7 by the menu : **[Tools]-[Manage Techn
 Then press + at the bottom left, you will add a new technology that you can call : _ASAP7_
 
 Then, you can copy the file **ASAP7.lyp**, **ASAP7.lyt** and the 2 directories **drc** and **lvs** of that repository in your directory :  
-`$HOME/.klayout/tech/ASAP7  (under Linux)`
-`#HOMEDATA#/klayout/tech/ASAP7  (under Windows)`
+`$HOME/.klayout/tech/ASAP7  (under Linux)`  
+`#HOMEDATA#/klayout/tech/ASAP7  (under Windows)`  
