@@ -530,6 +530,7 @@ all_drawing = [ :nwell, :fin, :gate, :gcut, :active, :sdt, :nselect, :pselect, :
   end
 end
 
+  
 # time spent for the DRC
 time = Time.now
 hours = ((time - tstart)/3600).to_i
