@@ -1,6 +1,6 @@
 # ASAP7_for_KLayout
 
-## KLayout technology files for ASAP7 FinFET educational process
+## KLayout (version 0.27 or higher) technology files for ASAP7 FinFET educational process
 
  * ASAP7.lyt   : technology and connections description  
  * ASAP7.lyp   : layers color and shape description  
