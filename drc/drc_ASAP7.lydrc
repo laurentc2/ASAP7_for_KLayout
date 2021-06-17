@@ -38,7 +38,8 @@ end
 
 # DRC test to run or not
 ###############
-OFFGRID = true
+OFFGRID = false
+DEBUG = true
 
 # KLAYOUT setup
 ########################
@@ -134,6 +135,7 @@ nwell.not(sramdrc).enclosing(gatenogcut, 7.nm, projection).with_angle(0).output(
 ###   FIN
 fin.edges.with_angle(90).without_length(7.nm).output("FIN.W.1a", "FIN.W.1 : Exact vertical width of FIN : 7nm")
 fin.without_bbox_height(7.nm).output("FIN.W.1", "FIN.W.1 : Exact vertical width of FIN : 7nm")
+#fin.drc(if_all(angle == 90, length != 7.nm)).output("FIN.W.1c", "FIN.W.1 : Exact vertical width of FIN : 7nm")
 fin.drc(width(projection) &lt; 108.nm).with_angle(90).output("FIN.W.2", "FIN.W.2 : Min. horizontal width of WELL : 108nm")
 fin.space(35.nm, projection).polygons.not(fin).without_bbox_height(20.nm).sized(0,3.5.nm).output("FIN.S.1", "FIN.S.1 : Exact vertical FIN pitch : 27nm")
 fin.corners(0..90).sized(1.nm).output("FIN.AUX.1", "FIN.AUX.1 : FIN may not bend")
@@ -150,7 +152,6 @@ active.edges.with_angle(90).and(gate).output("GATE.AUX.3", "GATE.AUX.3 : ACTIVE 
 gate.enclosing(gate.and(active), 4.nm, projection).polygons.without_area(0).output("GATE.ACTIVE.EX.1", "GATE.ACTIVE.EX.1 : Min. vertical extension of GATE (not cut by GCUT) past ACTIVE : 4nm")
 active.interacting(gate).enclosing(gate.and(active), 25.nm, projection).polygons.without_area(0).output("GATE.ACTIVE.EX.2", "GATE.ACTIVE.EX.2 : Min. horizontal extension of ACTIVE interacting with GATE (not cut by GCUT layer) past GATE (not cut by GCUT layer) : 20nm")
 gatenogcut.separation(active, 9.nm, projection).polygons.without_area(0).not_interacting(gate &amp; active).output("GATE.ACTIVE.S.4", "GATE.ACTIVE.S.4 : Min. horizontal spacing between ACTIVE and GATE (not cut by GCUT and not interacting with ACTIVE) : 9nm")
-
 
 ### ACTIVE
 active.enclosing(fin,10.nm, projection).polygons.without_area(0).output("ACTIVE.FIN.EX.1", "ACTIVE.FIN.EX.1 : Min. vertical extension of ACTIVE past FIN : 10nm")
@@ -212,17 +213,17 @@ sdt.separation(gate, 5.nm, projection).output("SDT.GATE.S.2", "SDT.GATE.S.2 : Mi
 ###   LISD
 lisd.width(24.nm).output("LISD.W.1", "LISD.W.1 : Min. width of LISD : 24nm")
 lisd.space(18.nm).polygons.not_interacting(lisd.edges.with_length(0..36.nm)).output("LISD.S.1", "LISD.S.1 : Min. spacing between two LISD' edges, when both edges are &gt; 36 nm : 18nm")
-lisd.space(25.nm).polygons.not_interacting(lisd.edges.with_length(36.nm..nil)).output("LISD.S.2", "LISD.S.2 : Min. spacing between two LISD' edges, when one edge is &gt; 36 nm : 25nm")
-lisd.space(27.nm, euclidian).polygons.not_interacting(lisd.edges.with_length(36.nm..nil)).output("LISD.S.3-4", "LISD.S.3-4 : Min. spacing between two LISD' edges, when both edge are =&lt; 36 nm : 27nm")
+lisd.space(25.nm).polygons.not_interacting(lisd.edges.with_length(36.nm..100.mm)).output("LISD.S.2", "LISD.S.2 : Min. spacing between two LISD' edges, when one edge is &gt; 36 nm : 25nm")
+lisd.space(27.nm, euclidian).polygons.not_interacting(lisd.edges.with_length(36.nm..100.mm)).output("LISD.S.3-4", "LISD.S.3-4 : Min. spacing between two LISD' edges, when both edge are =&lt; 36 nm : 27nm")
 lisd.with_area(0 .. 0.000648).output("LISD.A.1", "LISD.A.1 : Min. area of LISD : 648nm2")
 lisd.and(sramdrc).with_area(0).output("SRAM.LISD.AUX.1", "SRAM.LISD.AUX.1 : LISD, which are either completely outside the SRAMDRC or which do not intersect the SRAMDRC, may not touch the SRAMDRC")
 
 ###   LIG
 lig.width(16.nm).output("LIG.W.1", "LIG.W.1 : Min. width of LIG : 16nm")
 lig.space(18.nm).polygons.not_interacting(lig.edges.with_length(0..36.nm)).output("LIG.S.1", "LIG.S.1 : Min. spacing between two LIG' edges, when both edges are &gt; 36 nm : 18nm")
-lig.space(25.nm).polygons.not_interacting(lig.edges.with_length(36.nm..nil)).output("LISD.S.2", "LIG.S.2 : Min. spacing between two LIG' edges, when one edge is &gt; 36 nm : 25nm")
-lig.space(27.nm).polygons.not_interacting(lig.edges.with_length(0..24.nm)).not_interacting(lig.edges.with_length(36.nm..nil)).output("LIG.S.3", "LIG.S.3 : Min. spacing between two LIG' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
-lig.space(31.nm, euclidian).polygons.not_interacting(lisd.edges.with_length(24.nm..nil)).output("LIG.S.4-5", "LISD.S.4-5 : Min. spacing between two LIG' edges, when both edge are =&lt; 24 nm : 31nm")
+lig.space(25.nm).polygons.not_interacting(lig.edges.with_length(36.nm..100.mm)).output("LISD.S.2", "LIG.S.2 : Min. spacing between two LIG' edges, when one edge is &gt; 36 nm : 25nm")
+lig.space(27.nm).polygons.not_interacting(lig.edges.with_length(0..24.nm)).not_interacting(lig.edges.with_length(36.nm..100.mm)).output("LIG.S.3", "LIG.S.3 : Min. spacing between two LIG' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
+lig.space(31.nm, euclidian).polygons.not_interacting(lisd.edges.with_length(24.nm..100.mm)).output("LIG.S.4-5", "LISD.S.4-5 : Min. spacing between two LIG' edges, when both edge are =&lt; 24 nm : 31nm")
 lig.separation(lisd, 14.nm, projection).output("LIG.LISD.S.6" "LIG.LISD.S.6 : Min. spacing between LIG and LISD not on the same net : 14nm")
 lig.separation(lisd, 15.nm, euclidian).output("LIG.LISD.S.7" "LIG.LISD.S.7 : Min. corner-to-corner spacing between LISD and LIG not on the same net : 15nm")
 lig.separation(sdt, 14.nm, projection).output("LIG.SDT.S.8" "LIG.SDT.S.8 : Min. spacing between LIG and SDT not on the same net : 14nm")
@@ -247,7 +248,7 @@ v0.width(18.nm).output("V0.W.1", "V0.W.1 : Min. width of V0 : 18nm")
 v0.space(18.nm, projection).output("V0.S.1", "V0.S.1 : Min. spacing between V0 instances [on the same M1 track or on parallel M1 tracks, if they are fully or partially aligned with each other : 18nm")
 v0spaceortho = v0.space(27.nm, projection).polygons
 v0.space(27.nm, euclidian).polygons.not_interacting(v0spaceortho).output("V0.S.1", "V0.S.1 : Min. spacing between V0 instances on parallel M1 tracks, if they are not aligned with each other : 27nm")
-m1ovlp5v0 = (m1 &amp; v0.sized(5.nm) - v0).sized(-2.5.nm).sized(2.5.nm)
+m1ovlp5v0 = (m1 &amp; v0.sized(5.nm) - v0).sized(-2.5.nm+1.dbu).sized(2.5.nm-1.dbu)
 v0.edges.and(m1ovlp5v0).space(23.nm, euclidian).polygons.not(v0spaceortho).output("V0.S.2", "V0.S.2 : Min. corner-to-corner spacing between two V0 instances—both with a 5 nm M1 end-cap : 23nm")
 v0.edges.not_interacting(m1ovlp5v0).space(30.nm, euclidian).output("V0.S.3", "V0.S.3 : Min. corner-to-corner spacing between two V0 instances—both without a 5 nm M1 end-cap : 30nm")
 v0.edges.and(m1ovlp5v0).separation(v0.edges.not_interacting(m1ovlp5v0), 27.nm, euclidian).output("V0.S.4", "V0.S.4 : Min. corner-to-corner spacing between two V0 instances—one with and another without, a 5 nm M1 end-cap : 27nm")
@@ -265,10 +266,10 @@ v0.not_interacting(m1.enclosing(v0, 1.dbu, projection, two_opposite_sides_allowe
 ###   M1
 m1.width(18.nm).output("M1.W.1", "M1.W.1 : Min. width of M1 : 18nm")
 m1.space(18.nm).polygons.not_interacting(m1.edges.with_length(0..36.nm)).output("M1.S.1", "M1.S.1 : Min. spacing between two M1' edges, when both edges are &gt; 36 nm : 18nm")
-m1.space(25.nm).polygons.not_interacting(m1.edges.with_length(36.nm..nil)).output("M1.S.2", "M1.S.2 : Min. spacing between two M1' edges, when one edge is &gt; 36 nm : 25nm")
-m1.space(27.nm).polygons.not_interacting(m1.edges.with_length(0..24.nm)).not_interacting(m1.edges.with_length(36.nm..nil)).output("M1.S.3", "M1.S.3 : Min. spacing between two M1' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
-m1.space(31.nm).polygons.not_interacting(m1.edges.with_length(24.nm..nil)).output("M1.S.4-5", "M1.S.4-5 : Min. spacing between two M1' edges, when both edge are =&lt; 24 nm : 31nm")
-m1long = m1.space(20.nm, projection).polygons.interacting(m1.edges.with_length(36.nm..nil))
+m1.space(25.nm).polygons.not_interacting(m1.edges.with_length(36.nm..100.mm)).output("M1.S.2", "M1.S.2 : Min. spacing between two M1' edges, when one edge is &gt; 36 nm : 25nm")
+m1.space(27.nm).polygons.not_interacting(m1.edges.with_length(0..24.nm)).not_interacting(m1.edges.with_length(36.nm..100.mm)).output("M1.S.3", "M1.S.3 : Min. spacing between two M1' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
+m1.space(31.nm).polygons.not_interacting(m1.edges.with_length(24.nm..100.mm)).output("M1.S.4-5", "M1.S.4-5 : Min. spacing between two M1' edges, when both edge are =&lt; 24 nm : 31nm")
+m1long = m1.space(20.nm, projection).polygons.interacting(m1.edges.with_length(36.nm..100.mm))
 m1.space(20.nm, euclidian).polygons.not_interacting(m1long).output("M1.S.6", "M1.S.6 : Min. corner-to-corner spacing between two M1 : 20nm")
 m1long.forget
 m1.with_area(0 .. 0.000504).output("M1.A.1", "M1.A.1 : Min. area of M1 : 504nm2")
@@ -276,10 +277,10 @@ m1.with_area(0 .. 0.000504).output("M1.A.1", "M1.A.1 : Min. area of M1 : 504nm2"
 ###   M2
 m2.width(18.nm).output("M2.W.1", "M2.W.1 : Min. width of M2 : 18nm")
 m2.space(18.nm).polygons.not_interacting(m2.edges.with_length(0..36.nm)).output("M2.S.1", "M2.S.1 : Min. spacing between two M2' edges, when both edges are &gt; 36 nm : 18nm")
-m2.space(25.nm).polygons.not_interacting(m2.edges.with_length(36.nm..nil)).output("M2.S.2", "M2.S.2 : Min. spacing between two M2' edges, when one edge is &gt; 36 nm : 25nm")
-m2.space(27.nm).polygons.not_interacting(m2.edges.with_length(0..24.nm)).not_interacting(m2.edges.with_length(36.nm..nil)).output("M2.S.3", "M2.S.3 : Min. spacing between two M2' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
-m2.space(31.nm).polygons.not_interacting(m2.edges.with_length(24.nm..nil)).output("M2.S.4-5", "M2.S.4-5 : Min. spacing between two M2' edges, when both edge are =&lt; 24 nm : 31nm")
-m2long = m2.space(20.nm, projection).polygons.interacting(m2.edges.with_length(36.nm..nil))
+m2.space(25.nm).polygons.not_interacting(m2.edges.with_length(36.nm..100.mm)).output("M2.S.2", "M2.S.2 : Min. spacing between two M2' edges, when one edge is &gt; 36 nm : 25nm")
+m2.space(27.nm).polygons.not_interacting(m2.edges.with_length(0..24.nm)).not_interacting(m2.edges.with_length(36.nm..100.mm)).output("M2.S.3", "M2.S.3 : Min. spacing between two M2' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
+m2.space(31.nm).polygons.not_interacting(m2.edges.with_length(24.nm..100.mm)).output("M2.S.4-5", "M2.S.4-5 : Min. spacing between two M2' edges, when both edge are =&lt; 24 nm : 31nm")
+m2long = m2.space(20.nm, projection).polygons.interacting(m2.edges.with_length(36.nm..100.mm))
 m2.space(20.nm, euclidian).polygons.not_interacting(m2long).output("M2.S.6", "M2.S.6 : Min. corner-to-corner spacing between two M2 : 20nm")
 m2long.forget
 m2.with_area(0 .. 0.000504).output("M2.A.1", "M2.A.1 : Min. area of M2 : 504nm2")
@@ -287,10 +288,10 @@ m2.with_area(0 .. 0.000504).output("M2.A.1", "M2.A.1 : Min. area of M2 : 504nm2"
 ###   M3
 m3.width(18.nm).output("M3.W.1", "M3.W.1 : Min. width of M3 : 18nm")
 m3.space(18.nm).polygons.not_interacting(m3.edges.with_length(0..36.nm)).output("M3.S.1", "M3.S.1 : Min. spacing between two M3' edges, when both edges are &gt; 36 nm : 18nm")
-m3.space(25.nm).polygons.not_interacting(m3.edges.with_length(36.nm..nil)).output("M3.S.2", "M3.S.2 : Min. spacing between two M3' edges, when one edge is &gt; 36 nm : 25nm")
-m3.space(27.nm).polygons.not_interacting(m3.edges.with_length(0..24.nm)).not_interacting(m3.edges.with_length(36.nm..nil)).output("M3.S.3", "M3.S.3 : Min. spacing between two M3' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
-m3.space(31.nm).polygons.not_interacting(m3.edges.with_length(24.nm..nil)).output("M3.S.4-5", "M3.S.4-5 : Min. spacing between two M3' edges, when both edge are =&lt; 24 nm : 31nm")
-m3long = m3.space(20.nm, projection).polygons.interacting(m3.edges.with_length(36.nm..nil))
+m3.space(25.nm).polygons.not_interacting(m3.edges.with_length(36.nm..100.mm)).output("M3.S.2", "M3.S.2 : Min. spacing between two M3' edges, when one edge is &gt; 36 nm : 25nm")
+m3.space(27.nm).polygons.not_interacting(m3.edges.with_length(0..24.nm)).not_interacting(m3.edges.with_length(36.nm..100.mm)).output("M3.S.3", "M3.S.3 : Min. spacing between two M3' edges, when both edges are &gt;=24nm and =&lt; 36 nm : 27nm")
+m3.space(31.nm).polygons.not_interacting(m3.edges.with_length(24.nm..100.mm)).output("M3.S.4-5", "M3.S.4-5 : Min. spacing between two M3' edges, when both edge are =&lt; 24 nm : 31nm")
+m3long = m3.space(20.nm, projection).polygons.interacting(m3.edges.with_length(36.nm..100.mm))
 m3.space(20.nm, euclidian).polygons.not_interacting(m3long).output("M3.S.6", "M3.S.6 : Min. corner-to-corner spacing between two M3 : 20nm")
 m3long.forget
 m3.with_area(0 .. 0.000504).output("M3.A.1", "M3.A.1 : Min. area of M3 : 504nm2")
@@ -302,12 +303,12 @@ v1.width(18.nm).output("V1.W.1", "V1.W.1 : Min. width of V1 : 18nm")
 v1.space(18.nm, projection).output("V1.S.1", "V1.S.1 : Min. spacing between V1 instances [on the same M2 track or on parallel M2 tracks, if they are fully or partially aligned with each other : 18nm")
 v1spaceortho = v1.space(27.nm, projection).polygons
 v1.space(27.nm, projection).polygons.not_interacting(v1spaceortho).output("V1.S.1", "V1.S.1 : Min. spacing between V1 instances on parallel M2 tracks, if they are not aligned with each other : 27nm")
-m2ovlp5v1 = (m2 &amp; v1.sized(5.nm) - v1).sized(-2.5.nm).sized(2.5.nm)
+m2ovlp5v1 = (m2 &amp; v1.sized(5.nm + 2.dbu) - v1).sized(-2.5.nm).sized(2.5.nm)
 v1.edges.and(m2ovlp5v1).space(23.nm, euclidian).polygons.not(v1spaceortho).output("V1.S.2", "V1.S.2 : Min. corner-to-corner spacing between two V1 instances—both with a 5 nm M2 end-cap : 23nm")
 v1.edges.not_interacting(m2ovlp5v1).space(30.nm, euclidian).output("V1.S.3", "V1.S.3 : Min. corner-to-corner spacing between two V1 instances—both without a 5 nm M2 end-cap : 30nm")
 v1.edges.and(m2ovlp5v1).separation(v1.edges.not_interacting(m2ovlp5v1), 27.nm, euclidian).output("V1.S.4", "V1.S.4 : Min. corner-to-corner spacing between two V1 instances—one with and another without, a 5 nm M2 end-cap : 27nm")
 v1spaceortho.forget
-m1ovlp5v1 = (m1 &amp; v1.sized(5.nm) - v1).sized(-2.5.nm).sized(2.5.nm)
+m1ovlp5v1 = (m1 &amp; v1.sized(5.nm) - v1).sized(-2.5.nm+1.dbu).sized(2.5.nm-1.dbu)
 v1.interacting(m1.enclosing(v1, 2.nm, projection, two_connected_sides_allowed).edges - m1.enclosing(v1, 2.nm, projection, one_side_allowed).edges).output("V1.M1.EN.1", "V1.M1.EN.1 : Min. enclosure of V1 by M1 on at least two opposite sides  : 5nm &amp; 2nm")
 v1.interacting(m1.enclosing(v1, 5.nm, projection, two_connected_sides_allowed).edges - m1.enclosing(v1, 5.nm, projection, one_side_allowed).edges).not_interacting(m1ovlp5v1.sized(1.dbu)).output("V1.M1.EN.1", "V1.M1.EN.1 : Min. enclosure of V1 by M1 on at least two opposite sides  : 5nm &amp; 2nm")
 v1.not_interacting(m2ovlp5v1.sized(2.dbu)).output("V1.M2.EN.2", "V1.M2.EN.2 : enclosure of V1 by M2 on one side : 5nm")
@@ -322,7 +323,7 @@ v2.width(18.nm).output("V2.W.1", "V2.W.1 : Min. width of V2 : 18nm")
 v2.space(18.nm, projection).output("V2.S.1", "V2.S.1 : Min. spacing between V2 instances [on the same M3 track or on parallel M3 tracks, if they are fully or partially aligned with each other : 18nm")
 v2spaceortho = v2.space(27.nm, projection).polygons
 v2.space(27.nm, projection).polygons.not_interacting(v2spaceortho).output("V2.S.1", "V2.S.1 : Min. spacing between V2 instances on parallel M3 tracks, if they are not aligned with each other : 27nm")
-m3ovlp5v2 = (m3 &amp; v2.sized(5.nm) - v2).sized(-2.5.nm).sized(2.5.nm)
+m3ovlp5v2 = (m3 &amp; v2.sized(5.nm) - v2).sized(-2.5.nm+1.dbu).sized(2.5.nm)
 v2.edges.and(m3ovlp5v2).space(23.nm, euclidian).polygons.not(v2spaceortho).output("V2.S.2", "V2.S.2 : Min. corner-to-corner spacing between two V2 instances—both with a 5 nm M3 end-cap : 23nm")
 v2.edges.not_interacting(m3ovlp5v2).space(30.nm, euclidian).output("V2.S.3", "V2.S.3 : Min. corner-to-corner spacing between two V2 instances—both without a 5 nm M3 end-cap : 30nm")
 v2.edges.and(m3ovlp5v2).separation(v2.edges.not_interacting(m3ovlp5v2), 27.nm, euclidian).output("V2.S.4", "V2.S.4 : Min. corner-to-corner spacing between two V2 instances—one with and another without, a 5 nm M3 end-cap : 27nm")
@@ -338,7 +339,7 @@ v3.width(18.nm).output("V3.W.1", "V3.W.1 : Min. width of V3 : 18nm")
 v3.space(18.nm, projection).output("V3.S.1", "V3.S.1 : Min. spacing between V3 instances [on the same M4 track or on parallel M4 tracks, if they are fully or partially aligned with each other : 18nm")
 v3spaceortho = v3.space(27.nm, projection).polygons
 v3.space(27.nm, projection).polygons.not_interacting(v3spaceortho).output("V3.S.1", "V3.S.1 : Min. spacing between V3 instances on parallel M4 tracks, if they are not aligned with each other : 27nm")
-m4ovlp5v3 = (m4 &amp; v3.sized(5.nm) - v3).sized(-2.5.nm).sized(2.5.nm)
+m4ovlp5v3 = (m4 &amp; v3.sized(5.nm) - v3).sized(-2.5.nm+1.dbu).sized(2.5.nm)
 v3.edges.and(m4ovlp5v3).space(23.nm, euclidian).polygons.not(v3spaceortho).output("V3.S.2", "V3.S.2 : Min. corner-to-corner spacing between two V3 instances—both with a 5 nm M4 end-cap : 23nm")
 v3.edges.not_interacting(m4ovlp5v3).space(30.nm, euclidian).output("V3.S.3", "V3.S.3 : Min. corner-to-corner spacing between two V3 instances—both without a 5 nm M4 end-cap : 30nm")
 v3.edges.and(m4ovlp5v3).separation(v3.edges.not_interacting(m4ovlp5v3), 27.nm, euclidian).output("V3.S.4", "V3.S.4 : Min. corner-to-corner spacing between two V3 instances—one with and another without, a 5 nm M4 end-cap : 27nm")
@@ -463,16 +464,16 @@ m8.width(60.nm, projection).edges.with_length(0..400.nm).output("M8.W.2", "M8.W.
 m8.width(80.nm, projection).edges.with_length(400.nm..1200.nm).output("M8.W.3", "M8.W.3 : Min. width of M8, when its length &gt;= 1200 nm and &lt; 1800 nm : 80nm")
 m8.width(120.nm, projection).edges.with_length(1200.nm..1800.nm).output("M8.W.4", "M8.W.3 : Min. width of M8, when its length &gt;=1800 nm : 120nm")
 m8.sized(-1.um).sized(-1.um).output("M8.W.5", "M8.W.5 : Max. width of M8 : 2000nm")
-m8.space(40.nm, projection).edges.with_length(80.nm..nil).output("M8.S.1", "M8.S.1 : Min. spacing between two M8' edges, when both edges are &gt;= 80 nm : 40nm")
-m8.space(43.nm, projection).polygons.not_interacting(m8.edges.with_length(80.nm..nil)).output("M8.S.2", "M8.S.2 : Min. spacing between two M8' edges, when one of the edges is &lt; 80 nm and the other is &gt;= 80 nm : 43nm")
+m8.space(40.nm, projection).edges.with_length(80.nm..100.mm).output("M8.S.1", "M8.S.1 : Min. spacing between two M8' edges, when both edges are &gt;= 80 nm : 40nm")
+m8.space(43.nm, projection).polygons.not_interacting(m8.edges.with_length(80.nm..100.mm)).output("M8.S.2", "M8.S.2 : Min. spacing between two M8' edges, when one of the edges is &lt; 80 nm and the other is &gt;= 80 nm : 43nm")
 m8.space(46.nm, projection).edges.with_length(0..80.nm).output("M8.S.3", "M8.S.3 : Min. spacing between two M8' edges, when both edges are &lt; 80 nm : 46nm")
 m8.space(60.nm, projection).polygons.interacting(m8.edges.with_length(60.nm..80.nm)).output("M8.S.4", "M8.S.4 : Min. spacing between two M8' edges, when one of the edges is &gt;= 60 nm and &lt; 80 nm : 60nm")
 m8.space(80.nm, projection).polygons.interacting(m8.edges.with_length(80.nm..120.nm)).output("M8.S.5", "M8.S.5 : Min. spacing between two M8' edges, when one of the edges is &gt;= 80 nm and &lt; 120 nm : 80nm")
 m8.space(120.nm, projection).polygons.interacting(m8.edges.with_length(120.nm..500.nm)).output("M8.S.6", "M8.S.6 : Min. spacing between two M8' edges, when one of the edges is &gt;= 120 nm and &lt; 500 nm : 120nm")
 m8.space(500.nm, projection).polygons.interacting(m8.edges.with_length(500.nm..1000.nm)).output("M8.S.7", "M8.S.7 : Min. spacing between two M8' edges, when one of the edges is &gt;= 500 nm and &lt; 1000 nm : 500nm")
-m8.space(1000.nm, projection).polygons.interacting(m8.edges.with_length(1000.nm..nil)).output("M8.S.8", "M8.S.8 : Min. spacing between two M8' edges, when one of the edges is &gt;= 1000 nm : 1000nm")
+m8.space(1000.nm, projection).polygons.interacting(m8.edges.with_length(1000.nm..100.mm)).output("M8.S.8", "M8.S.8 : Min. spacing between two M8' edges, when one of the edges is &gt;= 1000 nm : 1000nm")
 m8.with_area(0 .. 0.007520).output("M8.A.1", "M8.A.1 : Min. area of M8 : 7520nm2")
-m8.edges.without_length(40.nm..nil).output("M8.L.1", "M8.L.1 : Minimum feature length of M8 : 40nm")
+m8.edges.without_length(40.nm..100.mm).output("M8.L.1", "M8.L.1 : Minimum feature length of M8 : 40nm")
 
 ###   M9
 m9.width(40.nm).output("M9.W.1", "M9.W.1 : Min. width of M9 : 40nm")
@@ -480,16 +481,16 @@ m9.width(60.nm, projection).edges.with_length(0..400.nm).output("M9.W.2", "M9.W.
 m9.width(80.nm, projection).edges.with_length(400.nm..1200.nm).output("M9.W.3", "M9.W.3 : Min. width of M9, when its length &gt;= 1200 nm and &lt; 1800 nm : 80nm")
 m9.width(120.nm, projection).edges.with_length(1200.nm..1800.nm).output("M9.W.4", "M9.W.3 : Min. width of M9, when its length &gt;=1800 nm : 120nm")
 m9.sized(-1.um).sized(-1.um).output("M9.W.5", "M9.W.5 : Max. width of M9 : 2000nm")
-m9.space(40.nm, projection).edges.with_length(80.nm..nil).output("M9.S.1", "M9.S.1 : Min. spacing between two M9' edges, when both edges are &gt;= 80 nm : 40nm")
-m9.space(43.nm, projection).polygons.not_interacting(m9.edges.with_length(80.nm..nil)).output("M9.S.2", "M9.S.2 : Min. spacing between two M9' edges, when one of the edges is &lt; 80 nm and the other is &gt;= 80 nm : 43nm")
+m9.space(40.nm, projection).edges.with_length(80.nm..100.mm).output("M9.S.1", "M9.S.1 : Min. spacing between two M9' edges, when both edges are &gt;= 80 nm : 40nm")
+m9.space(43.nm, projection).polygons.not_interacting(m9.edges.with_length(80.nm..100.mm)).output("M9.S.2", "M9.S.2 : Min. spacing between two M9' edges, when one of the edges is &lt; 80 nm and the other is &gt;= 80 nm : 43nm")
 m9.space(46.nm, projection).edges.with_length(0..80.nm).output("M9.S.3", "M9.S.3 : Min. spacing between two M9' edges, when both edges are &lt; 80 nm : 46nm")
 m9.space(60.nm, projection).polygons.interacting(m9.edges.with_length(60.nm..80.nm)).output("M9.S.4", "M9.S.4 : Min. spacing between two M9' edges, when one of the edges is &gt;= 60 nm and &lt; 80 nm : 60nm")
 m9.space(80.nm, projection).polygons.interacting(m9.edges.with_length(80.nm..120.nm)).output("M9.S.5", "M9.S.5 : Min. spacing between two M9' edges, when one of the edges is &gt;= 80 nm and &lt; 120 nm : 80nm")
 m9.space(120.nm, projection).polygons.interacting(m9.edges.with_length(120.nm..500.nm)).output("M9.S.6", "M9.S.6 : Min. spacing between two M9' edges, when one of the edges is &gt;= 120 nm and &lt; 500 nm : 120nm")
 m9.space(500.nm, projection).polygons.interacting(m9.edges.with_length(500.nm..1000.nm)).output("M9.S.7", "M9.S.7 : Min. spacing between two M9' edges, when one of the edges is &gt;= 500 nm and &lt; 1000 nm : 500nm")
-m9.space(1000.nm, projection).polygons.interacting(m9.edges.with_length(1000.nm..nil)).output("M9.S.8", "M9.S.8 : Min. spacing between two M9' edges, when one of the edges is &gt;= 1000 nm : 1000nm")
+m9.space(1000.nm, projection).polygons.interacting(m9.edges.with_length(1000.nm..100.mm)).output("M9.S.8", "M9.S.8 : Min. spacing between two M9' edges, when one of the edges is &gt;= 1000 nm : 1000nm")
 m9.with_area(0 .. 0.007520).output("M9.A.1", "M9.A.1 : Min. area of M9 : 7520nm2")
-m9.edges.without_length(40.nm..nil).output("M9.L.1", "M9.L.1 : Minimum feature length of M9 : 40nm")
+m9.edges.without_length(40.nm..100.mm).output("M9.L.1", "M9.L.1 : Minimum feature length of M9 : 40nm")
 
 
 ###   V8
@@ -530,7 +531,6 @@ all_drawing = [ :nwell, :fin, :gate, :gcut, :active, :sdt, :nselect, :pselect, :
   end
 end
 
-  
 # time spent for the DRC
 time = Time.now
 hours = ((time - tstart)/3600).to_i
