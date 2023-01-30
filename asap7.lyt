@@ -100,7 +100,7 @@
   </dxf>
   <cif>
    <wire-mode>0</wire-mode>
-   <dbu>0.001</dbu>
+   <dbu>0.00025</dbu>
    <layer-map>layer_map()</layer-map>
    <create-other-layers>true</create-other-layers>
    <keep-layer-names>false</keep-layer-names>
