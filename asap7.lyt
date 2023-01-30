@@ -3,7 +3,7 @@
  <name>ASAP 7</name>
  <description>ASAP 7 nm Technology</description>
  <group/>
- <dbu>0.001</dbu>
+ <dbu>0.00025</dbu>
  <base-path>$(appdata_path)/tech/ASAP7</base-path>
  <layer-properties_file>asap7.lyp</layer-properties_file>
  <add-other-layers>true</add-other-layers>
@@ -85,7 +85,7 @@
    <create-other-layers>true</create-other-layers>
   </mebes>
   <dxf>
-   <dbu>0.001</dbu>
+   <dbu>0.00025</dbu>
    <unit>1</unit>
    <text-scaling>100</text-scaling>
    <circle-points>100</circle-points>
@@ -107,7 +107,7 @@
   </cif>
   <mag>
    <lambda>1</lambda>
-   <dbu>0.001</dbu>
+   <dbu>0.00025</dbu>
    <layer-map>layer_map()</layer-map>
    <create-other-layers>true</create-other-layers>
    <keep-layer-names>false</keep-layer-names>
